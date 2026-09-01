@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Diamond Island - A Story in Chapters</title>
+<meta name="description" content="Diamond Island - an adventure story in chapters for elementary school kids. Narration, magical illustrations, and music, chapter by chapter.">
+<meta name="theme-color" content="#0b4f5c">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="../icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../icons/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="alternate" hreflang="he" href="../index.html">
+<link rel="alternate" hreflang="en" href="./index.html">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<div id="install-banner" class="install-banner" hidden>
+  <div class="install-banner__icon">
+    <img src="../icons/icon-192.png" alt="" width="44" height="44">
+  </div>
+  <div class="install-banner__text">
+    <strong id="install-banner-title">Install the App</strong>
+    <span id="install-banner-sub">Listen to the story offline too, right from your home screen</span>
+  </div>
+  <button id="install-banner-action" class="install-banner__btn" type="button">Install</button>
+  <button id="install-banner-close" class="install-banner__close" type="button" aria-label="Close">✕</button>
+</div>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a href="#top" class="brand">
+      <span class="brand__diamond" aria-hidden="true">◆</span>
+      <span class="brand__name">Diamond Island</span>
+    </a>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="#about">About</a>
+      <a href="#chapters">Chapters</a>
+      <a href="../index.html" class="lang-switch">עברית</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero" id="hero">
+    <div class="hero__bg" aria-hidden="true"></div>
+    <div class="hero__sparkles" aria-hidden="true"></div>
+    <div class="hero__content">
+      <p class="hero__eyebrow">A Story in Chapters for Kids</p>
+      <h1 class="hero__title">Diamond Island</h1>
+      <p class="hero__subtitle">Magical chapters full of adventure - to listen to and watch, one chapter at a time</p>
+      <div class="hero__cta-row">
+        <a href="#chapters" class="btn btn--primary">Let's Start Listening 🎧</a>
+        <a href="#about" class="btn btn--ghost">What's this story about?</a>
+      </div>
+    </div>
+    <div class="hero__scroll-hint" aria-hidden="true">
+      <span></span>
+    </div>
+  </section>
+
+  <section class="about" id="about">
+    <div class="about__inner">
+      <span class="section-eyebrow">The Story</span>
+      <h2 class="section-title">A Few Words About Diamond Island</h2>
+      <p class="about__text">
+        "Diamond Island" is an adventure story written especially for elementary school kids.
+        It's the story of Moshe, a father struggling to provide for his family, who sets off on a surprising journey
+        to a faraway, glittering island - and along the way learns an important lesson about what truly matters in life.
+      </p>
+      <p class="about__text">
+        12 chapters, one at a time - just like Moshe himself lived them, step by step.
+        Chapter One is ready now with full English narration, read in a voice specially created for this story -
+        and more chapters are on their way!
+      </p>
+    </div>
+  </section>
+
+  <section class="chapters" id="chapters">
+    <div class="chapters__head">
+      <span class="section-eyebrow">Ready to set sail?</span>
+      <h2 class="section-title">The Chapters</h2>
+      <p class="chapters__hint">Tap the player to listen to each chapter, and tap the picture to enlarge it</p>
+    </div>
+    <div id="chapters-list" class="chapters__list"><!-- injected by js/app.js --></div>
+    <p class="chapters__more">More chapters, narrated in English, are on their way! 💎<br>Meanwhile, the full 12-chapter story is ready to enjoy in <a href="../index.html">Hebrew</a>.</p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="brand__diamond" aria-hidden="true">◆</span>
+      <span>Diamond Island</span>
+    </div>
+    <p class="site-footer__note">Original story and music - enjoyed it? Share this story with more kids who'd love an adventure 💎</p>
+  </div>
+</footer>
+
+<div id="lightbox" class="lightbox" hidden>
+  <button id="lightbox-close" class="lightbox__close" type="button" aria-label="Close">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<button id="music-toggle" class="music-toggle" type="button" aria-pressed="false">
+  <span class="music-toggle__icon">🎵</span>
+  <span class="music-toggle__label">Background Music</span>
+</button>
+<audio id="background-music" src="../assets/audio/background-music.mp3" loop preload="none"></audio>
+
+<script src="js/app.js" defer></script>
+</body>
+</html>

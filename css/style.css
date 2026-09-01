@@ -39,6 +39,10 @@
   color-scheme: light;
 }
 
+html[lang="en"] {
+  --font-display: "Fredoka", "Quicksand", sans-serif;
+}
+
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
@@ -159,6 +163,13 @@ h1, h2, h3 {
 }
 .site-nav a:hover { opacity: 1; color: var(--gold-300); }
 .site-nav a:focus-visible { outline: 2px solid var(--gold-300); outline-offset: 4px; }
+.site-nav a.lang-switch {
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  padding: 0.3em 0.85em;
+  opacity: 1;
+}
+.site-nav a.lang-switch:hover { border-color: var(--gold-300); }
 
 /* ---------- Install banner ---------- */
 .install-banner {
@@ -355,6 +366,16 @@ h1, h2, h3 {
   text-align: center;
 }
 .chapters__hint { color: var(--ink-soft); font-size: 1rem; }
+.chapters__more {
+  max-width: 640px;
+  margin: 3rem auto 0;
+  text-align: center;
+  color: var(--teal-700);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  font-weight: 500;
+}
+.chapters__more a { color: var(--gold-700); text-decoration: underline; }
 
 .chapters__list {
   max-width: var(--container-w);
