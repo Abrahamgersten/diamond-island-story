@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>אי היהלומים - סיפור בהמשכים</title>
+<meta name="description" content="אי היהלומים - סיפור הרפתקאות בהמשכים לילדי בית הספר היסודי. 12 פרקים עם הקראה, איורים קסומים ומוזיקה.">
+<meta name="theme-color" content="#0b4f5c">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="icons/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Suez+One&family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="install-banner" class="install-banner" hidden>
+  <div class="install-banner__icon">
+    <img src="icons/icon-192.png" alt="" width="44" height="44">
+  </div>
+  <div class="install-banner__text">
+    <strong id="install-banner-title">התקינו את האפליקציה</strong>
+    <span id="install-banner-sub">האזינו לסיפור גם בלי אינטרנט, ישר מהמסך הראשי</span>
+  </div>
+  <button id="install-banner-action" class="install-banner__btn" type="button">התקנה</button>
+  <button id="install-banner-close" class="install-banner__close" type="button" aria-label="סגירה">✕</button>
+</div>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a href="#top" class="brand">
+      <span class="brand__diamond" aria-hidden="true">◆</span>
+      <span class="brand__name">אי היהלומים</span>
+    </a>
+    <nav class="site-nav" aria-label="ניווט ראשי">
+      <a href="#about">על הסיפור</a>
+      <a href="#chapters">הפרקים</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero" id="hero">
+    <div class="hero__bg" aria-hidden="true"></div>
+    <div class="hero__sparkles" aria-hidden="true"></div>
+    <div class="hero__content">
+      <p class="hero__eyebrow">סיפור בהמשכים לילדים</p>
+      <h1 class="hero__title">אִי הַיַּהֲלוֹמִים</h1>
+      <p class="hero__subtitle">12 פרקים קסומים, מלאי הרפתקאות - להאזנה ולצפייה, פרק אחר פרק</p>
+      <div class="hero__cta-row">
+        <a href="#chapters" class="btn btn--primary">בואו נתחיל להקשיב 🎧</a>
+        <a href="#about" class="btn btn--ghost">על מה הסיפור?</a>
+      </div>
+    </div>
+    <div class="hero__scroll-hint" aria-hidden="true">
+      <span></span>
+    </div>
+  </section>
+
+  <section class="about" id="about">
+    <div class="about__inner">
+      <span class="section-eyebrow">הסיפור</span>
+      <h2 class="section-title">כמה מילים על אי היהלומים</h2>
+      <p class="about__text">
+        "אִי הַיַּהֲלוֹמִים" הוא סיפור הרפתקאות שנכתב במיוחד לילדי בית הספר היסודי.
+        זהו סיפורו של מֹשֶׁה, אב למשפחה במצוקה, שיוצא למסע מפתיע ורחוק אל אי נוצץ שכולו יהלומים -
+        ובדרך פוגש שיעור חשוב, על מה באמת שווה בחיים.
+      </p>
+      <p class="about__text">
+        12 פרקים, פרק בכל פעם - בדיוק כמו שמֹשֶׁה עצמו חווה אותם, צעד אחר צעד.
+        לכל פרק הקראה מלאה, איור מיוחד, ואפשר גם להאזין למוזיקה המלווה ברקע.
+      </p>
+    </div>
+  </section>
+
+  <section class="chapters" id="chapters">
+    <div class="chapters__head">
+      <span class="section-eyebrow">מוכנים להפליג?</span>
+      <h2 class="section-title">כל הפרקים</h2>
+      <p class="chapters__hint">לחצו על הנגן כדי להקשיב לכל פרק, ולחצו על התמונה כדי להגדיל אותה</p>
+    </div>
+    <div id="chapters-list" class="chapters__list"><!-- injected by js/app.js --></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="brand__diamond" aria-hidden="true">◆</span>
+      <span>אי היהלומים</span>
+    </div>
+    <p class="site-footer__note">סיפור ומוזיקה מקוריים - נהנתם? שתפו את הסיפור עם עוד ילדים שיאהבו הרפתקאות 💎</p>
+  </div>
+</footer>
+
+<div id="lightbox" class="lightbox" hidden>
+  <button id="lightbox-close" class="lightbox__close" type="button" aria-label="סגירה">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<button id="music-toggle" class="music-toggle" type="button" aria-pressed="false">
+  <span class="music-toggle__icon">🎵</span>
+  <span class="music-toggle__label">מוזיקת רקע</span>
+</button>
+<audio id="background-music" src="assets/audio/background-music.mp3" loop preload="none"></audio>
+
+<script src="js/app.js" defer></script>
+</body>
+</html>
