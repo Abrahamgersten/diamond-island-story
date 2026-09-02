@@ -1,4 +1,4 @@
-const SHELL_CACHE = "diamond-island-shell-v2";
+const SHELL_CACHE = "diamond-island-shell-v3";
 const MEDIA_CACHE = "diamond-island-media-v2";
 
 const SHELL_ASSETS = [
