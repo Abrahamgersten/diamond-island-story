@@ -8,7 +8,7 @@ const CHAPTERS = [
     id: 1,
     title: "משפחה בצריף הקר",
     teaser: "משפחתו הענייה של משה מתמודדת עם עוד לילה קשה - ומשה מחליט שמחר הכול עומד להשתנות.",
-    audio: "assets/audio/ch1.mp3",
+    audio: "assets/audio/ch1-sfx.mp3",
     images: [
       { src: "assets/images/ch1.jpg", alt: "איור: משה יושב עם ילדיו בצריף עני וקר, נר דולק על השולחן" },
     ],
@@ -17,7 +17,7 @@ const CHAPTERS = [
     id: 2,
     title: "יום בשוק",
     teaser: "משה מחפש עבודה בשוק הסואן, ופתאום שומע שמועה מוזרה שתשנה לו את החיים.",
-    audio: "assets/audio/ch2.mp3",
+    audio: "assets/audio/ch2-sfx.mp3",
     images: [
       { src: "assets/images/ch2.jpg", alt: "איור: משה מחפש עבודה בשוק ליד דוכן ירקות" },
       { src: "assets/images/ch2b.jpg", alt: "איור: משה שומע במקרה שני גברים לוחשים על אי היהלומים" },
@@ -27,7 +27,7 @@ const CHAPTERS = [
     id: 3,
     title: "השמועה על אי היהלומים",
     teaser: "אי רחוק, שכולו עשוי יהלומים? ספינה אחת בלבד מפליגה אליו - וממריאה כבר מחר.",
-    audio: "assets/audio/ch3.mp3",
+    audio: "assets/audio/ch3-sfx.mp3",
     images: [
       { src: "assets/images/ch3.jpg", alt: "איור: אי קסום עם עצי יהלומים צף מעל בקתה כפרית, בדמיונו של משה" },
     ],
@@ -36,7 +36,7 @@ const CHAPTERS = [
     id: 4,
     title: "הדרך לנמל",
     teaser: "משה נפרד ביד כבדה ממשפחתו, ויוצא להרפתקה הגדולה של חייו.",
-    audio: "assets/audio/ch4.mp3",
+    audio: "assets/audio/ch4-sfx.mp3",
     images: [
       { src: "assets/images/ch4.jpg", alt: "איור: משה מחבק בעצב את ילדיו לפני שהוא יוצא לדרך" },
       { src: "assets/images/ch4b.jpg", alt: "איור: משה לוחץ ידיים עם רב החובל על סיפון הספינה" },
@@ -46,7 +46,7 @@ const CHAPTERS = [
     id: 5,
     title: "ההפלגה הארוכה",
     teaser: "חודשיים בלב ים, גלים, מחלת ים - וציפייה ענקית לרגע שבו סוף־סוף יראה את האי.",
-    audio: "assets/audio/ch5.mp3",
+    audio: "assets/audio/ch5-sfx.mp3",
     images: [
       { src: "assets/images/ch5.jpg", alt: "איור: משה מטפס בסולם חבלים לראש התורן, קשת בענן ברקע" },
     ],
@@ -55,7 +55,7 @@ const CHAPTERS = [
     id: 6,
     title: "חוף היהלומים",
     teaser: "החוף כולו נוצץ באלפי יהלומים אמיתיים! אבל משה עומד לגלות שהוא לגמרי לבד באי.",
-    audio: "assets/audio/ch6.mp3",
+    audio: "assets/audio/ch6-sfx.mp3",
     images: [
       { src: "assets/images/ch6.jpg", alt: "איור: משה עומד המום מול חוף עצום שכולו יהלומים נוצצים" },
     ],
@@ -64,7 +64,7 @@ const CHAPTERS = [
     id: 7,
     title: "אל תוך הג'ונגל",
     teaser: "מעבר לג'ונגל הסבוך מחכה הפתעה גדולה: כפר שלם, עם רחוב מרוצף ביהלומים.",
-    audio: "assets/audio/ch7.mp3",
+    audio: "assets/audio/ch7-sfx.mp3",
     images: [
       { src: "assets/images/ch7.jpg", alt: "איור: מבעד לג'ונגל סבוך נגלה כפר שלם עם רחוב מרוצף ביהלומים" },
     ],
@@ -73,7 +73,7 @@ const CHAPTERS = [
     id: 8,
     title: "מסעדת גפילטע פיש",
     teaser: "משה מגלה משהו מוזר מאוד: באי הזה, יהלומים לא שווים כלום.",
-    audio: "assets/audio/ch8.mp3",
+    audio: "assets/audio/ch8-sfx.mp3",
     images: [
       { src: "assets/images/ch8.jpg", alt: "איור: בעל מסעדת גפילטע פיש צוחק כשמשה מציע לו יהלום בתשלום" },
     ],
@@ -82,7 +82,7 @@ const CHAPTERS = [
     id: 9,
     title: "כשהמטבח הופך לבמה",
     teaser: "שטיפת כלים רגילה הופכת פתאום למופע שכולם עוצרים כדי לצפות בו.",
-    audio: "assets/audio/ch9.mp3",
+    audio: "assets/audio/ch9-sfx.mp3",
     images: [
       { src: "assets/images/ch9.jpg", alt: "איור: משה שוטף כלים בתנועות מהפנטות וקהל מתקהל להביט בו" },
     ],
@@ -91,7 +91,7 @@ const CHAPTERS = [
     id: 10,
     title: "כששטיפת כלים הופכת למופע מצליח",
     teaser: "אמרגן מפורסם מציע למשה הצעה שתשנה הכול.",
-    audio: "assets/audio/ch10.mp3",
+    audio: "assets/audio/ch10-sfx.mp3",
     images: [
       { src: "assets/images/ch10.jpg", alt: "איור: משה לוחץ ידיים לברונו האמרגן, קהל מוחא כפיים" },
     ],
@@ -100,7 +100,7 @@ const CHAPTERS = [
     id: 11,
     title: "חצי שנה של הצלחה, ורגע אחד של געגוע",
     teaser: "משה הופך לכוכב הגדול של האי, אבל לבו נמשך הביתה, אל מי שהכי אוהב.",
-    audio: "assets/audio/ch11.mp3",
+    audio: "assets/audio/ch11-sfx.mp3",
     images: [
       { src: "assets/images/ch11.jpg", alt: "איור: משה מופיע על במה בתיאטרון מלא, מלהטט בצלחות מול קהל נלהב" },
     ],
@@ -109,7 +109,7 @@ const CHAPTERS = [
     id: 12,
     title: "הפרידה מהאי",
     teaser: "משה חוזר סוף־סוף הביתה. אבל האם הביא איתו את הדבר הכי חשוב באמת?",
-    audio: "assets/audio/ch12.mp3",
+    audio: "assets/audio/ch12-sfx.mp3",
     images: [
       { src: "assets/images/ch12.jpg", alt: "איור: משה מנופף לשלום לתושבי האי ועולה על הספינה בדרך הביתה" },
       { src: "assets/images/ch12b.jpg", alt: "איור: משה מוציא יהלומים קטנים מכיסו ליד חביות שומן האווז" },

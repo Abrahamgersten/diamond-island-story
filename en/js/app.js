@@ -8,7 +8,7 @@ const CHAPTERS = [
     id: 1,
     title: "A Family in the Cold Hut",
     teaser: "Moshe's poor family faces yet another hard night - and Moshe decides tomorrow, everything is going to change.",
-    audio: "../assets/audio/en/ch1.mp3",
+    audio: "../assets/audio/en/ch1-sfx.mp3",
     images: [
       { src: "../assets/images/ch1.jpg", alt: "Illustration: Moshe sits with his children in a poor, cold hut, a candle burning on the table" },
     ],
@@ -17,7 +17,7 @@ const CHAPTERS = [
     id: 2,
     title: "A Day at the Market",
     teaser: "Moshe searches for work in the bustling market, and suddenly overhears a strange rumor that will change his life.",
-    audio: "../assets/audio/en/ch2.mp3",
+    audio: "../assets/audio/en/ch2-sfx.mp3",
     images: [
       { src: "../assets/images/ch2.jpg", alt: "Illustration: Moshe looks for work in the market near a vegetable stall" },
       { src: "../assets/images/ch2b.jpg", alt: "Illustration: Moshe overhears two men whispering about Diamond Island" },
@@ -27,7 +27,7 @@ const CHAPTERS = [
     id: 3,
     title: "The Rumor About Diamond Island",
     teaser: "A faraway island, made entirely of diamonds? Only one ship sails there - and it leaves tomorrow.",
-    audio: "../assets/audio/en/ch3.mp3",
+    audio: "../assets/audio/en/ch3-sfx.mp3",
     images: [
       { src: "../assets/images/ch3.jpg", alt: "Illustration: A magical island with diamond trees floating above a village hut, in Moshe's imagination" },
     ],
@@ -36,7 +36,7 @@ const CHAPTERS = [
     id: 4,
     title: "The Road to the Harbor",
     teaser: "Moshe says a heavy goodbye to his family, and sets off on the greatest adventure of his life.",
-    audio: "../assets/audio/en/ch4.mp3",
+    audio: "../assets/audio/en/ch4-sfx.mp3",
     images: [
       { src: "../assets/images/ch4.jpg", alt: "Illustration: Moshe hugs his children sadly before setting off" },
       { src: "../assets/images/ch4b.jpg", alt: "Illustration: Moshe shakes hands with the ship's captain on deck" },
@@ -46,7 +46,7 @@ const CHAPTERS = [
     id: 5,
     title: "The Long Voyage",
     teaser: "Two months at sea, waves, seasickness - and huge anticipation for the moment he'll finally see the island.",
-    audio: "../assets/audio/en/ch5.mp3",
+    audio: "../assets/audio/en/ch5-sfx.mp3",
     images: [
       { src: "../assets/images/ch5.jpg", alt: "Illustration: Moshe climbs a rope ladder to the top of the mast, a rainbow in the background" },
     ],
@@ -55,7 +55,7 @@ const CHAPTERS = [
     id: 6,
     title: "Diamond Beach",
     teaser: "The beach sparkles with thousands of real diamonds! But Moshe is about to discover he's completely alone on the island.",
-    audio: "../assets/audio/en/ch6.mp3",
+    audio: "../assets/audio/en/ch6-sfx.mp3",
     images: [
       { src: "../assets/images/ch6.jpg", alt: "Illustration: Moshe stands amazed before a huge beach covered in sparkling diamonds" },
     ],
@@ -64,7 +64,7 @@ const CHAPTERS = [
     id: 7,
     title: "Into the Jungle",
     teaser: "Beyond the tangled jungle waits a big surprise: a whole village, with a street paved in diamonds.",
-    audio: "../assets/audio/en/ch7.mp3",
+    audio: "../assets/audio/en/ch7-sfx.mp3",
     images: [
       { src: "../assets/images/ch7.jpg", alt: "Illustration: Beyond a tangled jungle, a whole village appears, with a street paved in diamonds" },
     ],
@@ -73,7 +73,7 @@ const CHAPTERS = [
     id: 8,
     title: "The Gefilte Fish Restaurant",
     teaser: "Moshe discovers something very strange: on this island, diamonds are worth nothing at all.",
-    audio: "../assets/audio/en/ch8.mp3",
+    audio: "../assets/audio/en/ch8-sfx.mp3",
     images: [
       { src: "../assets/images/ch8.jpg", alt: "Illustration: The gefilte fish restaurant owner laughs when Moshe offers a diamond as payment" },
     ],
@@ -82,7 +82,7 @@ const CHAPTERS = [
     id: 9,
     title: "When the Kitchen Becomes a Stage",
     teaser: "Ordinary dishwashing suddenly turns into a show everyone stops to watch.",
-    audio: "../assets/audio/en/ch9.mp3",
+    audio: "../assets/audio/en/ch9-sfx.mp3",
     images: [
       { src: "../assets/images/ch9.jpg", alt: "Illustration: Moshe washes dishes with hypnotic movements as a crowd gathers to watch" },
     ],
@@ -91,7 +91,7 @@ const CHAPTERS = [
     id: 10,
     title: "When Dishwashing Becomes a Hit Show",
     teaser: "A famous promoter offers Moshe a deal that will change everything.",
-    audio: "../assets/audio/en/ch10.mp3",
+    audio: "../assets/audio/en/ch10-sfx.mp3",
     images: [
       { src: "../assets/images/ch10.jpg", alt: "Illustration: Moshe shakes hands with Bruno the promoter, as the crowd applauds" },
     ],
@@ -100,7 +100,7 @@ const CHAPTERS = [
     id: 11,
     title: "Six Months of Success, and One Moment of Longing",
     teaser: "Moshe becomes the island's biggest star, but his heart is pulled home, to the one he loves most.",
-    audio: "../assets/audio/en/ch11.mp3",
+    audio: "../assets/audio/en/ch11-sfx.mp3",
     images: [
       { src: "../assets/images/ch11.jpg", alt: "Illustration: Moshe performs on stage in a packed theater, juggling plates before an excited crowd" },
     ],
@@ -109,7 +109,7 @@ const CHAPTERS = [
     id: 12,
     title: "Farewell to the Island",
     teaser: "Moshe finally returns home. But did he bring back the thing that truly matters most?",
-    audio: "../assets/audio/en/ch12.mp3",
+    audio: "../assets/audio/en/ch12-sfx.mp3",
     images: [
       { src: "../assets/images/ch12.jpg", alt: "Illustration: Moshe waves goodbye to the islanders and boards the ship home" },
       { src: "../assets/images/ch12b.jpg", alt: "Illustration: Moshe takes small diamonds from his pocket next to barrels of goose fat" },
