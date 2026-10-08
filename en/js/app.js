@@ -142,19 +142,113 @@ const storage = safeStorage();
 /* ---------------------------------------------------------------
    Render chapters
 --------------------------------------------------------------- */
+const CONTINUOUS_CHEVRON_SVG = `<svg class="continuous-dd__chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>`;
+
 function continuousSelectHTML(ch, idx, total) {
   const remaining = total - idx; // chapters from here to the end, including this one
   if (remaining <= 1) return ""; // last chapter - nothing to chain to
   const fixedOptions = [2, 3, 5].filter((n) => n < remaining);
-  const options = [`<option value="1">This chapter only</option>`]
-    .concat(fixedOptions.map((n) => `<option value="${n}">${n} chapters</option>`))
-    .concat([`<option value="all">All ${remaining} chapters from here</option>`])
+  const choices = [{ value: "1", label: "This chapter only" }]
+    .concat(fixedOptions.map((n) => ({ value: String(n), label: `${n} chapters` })))
+    .concat([{ value: "all", label: `All ${remaining} chapters from here` }]);
+  const items = choices
+    .map(
+      (c, i) =>
+        `<li class="continuous-dd__option${i === 0 ? " is-selected" : ""}" role="option" data-value="${c.value}" aria-selected="${i === 0}" tabindex="-1">${c.label}</li>`
+    )
     .join("");
   return `
-      <label class="player-continuous">
-        <span>Play in a row:</span>
-        <select class="player-continuous__select" aria-label="How many chapters to play in a row, starting from chapter ${ch.id}">${options}</select>
-      </label>`;
+      <div class="player-continuous">
+        <span class="player-continuous__text">Play in a row:</span>
+        <div class="continuous-dd" data-value="1">
+          <button type="button" class="continuous-dd__btn" aria-haspopup="listbox" aria-expanded="false">
+            <span class="continuous-dd__value">This chapter only</span>
+            ${CONTINUOUS_CHEVRON_SVG}
+          </button>
+          <ul class="continuous-dd__list" role="listbox" aria-label="How many chapters to play in a row, starting from chapter ${ch.id}" hidden>${items}</ul>
+        </div>
+      </div>`;
+}
+
+function setupContinuousDropdowns() {
+  const dropdowns = Array.from(document.querySelectorAll(".continuous-dd"));
+
+  function closeDropdown(dd) {
+    const btn = dd.querySelector(".continuous-dd__btn");
+    const list = dd.querySelector(".continuous-dd__list");
+    list.hidden = true;
+    btn.setAttribute("aria-expanded", "false");
+  }
+  function closeAll(except) {
+    dropdowns.forEach((dd) => { if (dd !== except) closeDropdown(dd); });
+  }
+  function openDropdown(dd) {
+    closeAll(dd);
+    const btn = dd.querySelector(".continuous-dd__btn");
+    const list = dd.querySelector(".continuous-dd__list");
+    list.hidden = false;
+    btn.setAttribute("aria-expanded", "true");
+  }
+  function selectOption(dd, li) {
+    const btn = dd.querySelector(".continuous-dd__btn");
+    const valueEl = btn.querySelector(".continuous-dd__value");
+    dd.querySelectorAll(".continuous-dd__option").forEach((o) => {
+      o.classList.toggle("is-selected", o === li);
+      o.setAttribute("aria-selected", o === li ? "true" : "false");
+    });
+    dd.dataset.value = li.dataset.value;
+    valueEl.textContent = li.textContent;
+  }
+
+  dropdowns.forEach((dd) => {
+    const btn = dd.querySelector(".continuous-dd__btn");
+    const list = dd.querySelector(".continuous-dd__list");
+    const options = Array.from(dd.querySelectorAll(".continuous-dd__option"));
+
+    btn.addEventListener("click", () => {
+      if (list.hidden) {
+        openDropdown(dd);
+        (options.find((o) => o.classList.contains("is-selected")) || options[0]).focus();
+      } else {
+        closeDropdown(dd);
+      }
+    });
+    btn.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openDropdown(dd);
+        (options.find((o) => o.classList.contains("is-selected")) || options[0]).focus();
+      }
+    });
+
+    options.forEach((li, i) => {
+      li.addEventListener("click", () => { selectOption(dd, li); closeDropdown(dd); btn.focus(); });
+      li.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          selectOption(dd, li);
+          closeDropdown(dd);
+          btn.focus();
+        } else if (e.key === "ArrowDown") {
+          e.preventDefault();
+          (options[i + 1] || options[0]).focus();
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          (options[i - 1] || options[options.length - 1]).focus();
+        } else if (e.key === "Escape") {
+          e.preventDefault();
+          closeDropdown(dd);
+          btn.focus();
+        } else if (e.key === "Tab") {
+          closeDropdown(dd);
+        }
+      });
+    });
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".continuous-dd")) closeAll();
+  });
 }
 
 function chapterCardHTML(ch, idx) {
@@ -267,7 +361,7 @@ function setupPlayers() {
     const seek = el.querySelector(".player__seek");
     const current = el.querySelector(".player__current");
     const duration = el.querySelector(".player__duration");
-    const continuousSelect = el.closest(".player-wrap")?.querySelector(".player-continuous__select");
+    const continuousDd = el.closest(".player-wrap")?.querySelector(".continuous-dd");
     let audio = null;
     let seeking = false;
     let pausedByOther = false; // true only when di-pause-request paused us (another chapter starting) - not a manual pause
@@ -318,7 +412,7 @@ function setupPlayers() {
     btn.addEventListener("click", () => {
       const a = ensureAudio();
       if (a.paused) {
-        const choice = continuousSelect ? continuousSelect.value : "1";
+        const choice = continuousDd ? continuousDd.dataset.value : "1";
         continuousPlan = choice === "1" ? null : { remaining: choice === "all" ? Infinity : Number(choice) - 1 };
         a.play().catch(() => {});
       } else {
@@ -554,6 +648,7 @@ function setupServiceWorker() {
 document.addEventListener("DOMContentLoaded", () => {
   renderChapters();
   setupMediaInteractions();
+  setupContinuousDropdowns();
   setupPlayers();
   setupSparkles();
   setupScrollReveal();
