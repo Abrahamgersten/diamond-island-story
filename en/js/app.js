@@ -171,63 +171,80 @@ function continuousSelectHTML(ch, idx, total) {
 }
 
 function setupContinuousDropdowns() {
-  const dropdowns = Array.from(document.querySelectorAll(".continuous-dd"));
-
-  function closeDropdown(dd) {
+  // Each chapter-card has overflow:hidden (to clip its image to the card's
+  // rounded corners), which also silently clips any position:absolute
+  // dropdown that opens near the card's bottom edge. Fix: move every list to
+  // <body> (outside any clipping ancestor) and position it with
+  // position:fixed from the trigger's own on-screen position.
+  const entries = Array.from(document.querySelectorAll(".continuous-dd")).map((dd) => {
     const btn = dd.querySelector(".continuous-dd__btn");
     const list = dd.querySelector(".continuous-dd__list");
-    list.hidden = true;
-    btn.setAttribute("aria-expanded", "false");
+    document.body.appendChild(list);
+    return { dd, btn, list, options: Array.from(list.querySelectorAll(".continuous-dd__option")) };
+  });
+  const isRtl = document.documentElement.dir === "rtl";
+
+  function positionList(entry) {
+    const r = entry.btn.getBoundingClientRect();
+    entry.list.style.top = `${r.bottom + 6}px`;
+    entry.list.style.minWidth = `${r.width}px`;
+    if (isRtl) {
+      entry.list.style.right = `${window.innerWidth - r.right}px`;
+      entry.list.style.left = "auto";
+    } else {
+      entry.list.style.left = `${r.left}px`;
+      entry.list.style.right = "auto";
+    }
+  }
+  function closeDropdown(entry) {
+    entry.list.hidden = true;
+    entry.btn.setAttribute("aria-expanded", "false");
   }
   function closeAll(except) {
-    dropdowns.forEach((dd) => { if (dd !== except) closeDropdown(dd); });
+    entries.forEach((entry) => { if (entry !== except) closeDropdown(entry); });
   }
-  function openDropdown(dd) {
-    closeAll(dd);
-    const btn = dd.querySelector(".continuous-dd__btn");
-    const list = dd.querySelector(".continuous-dd__list");
-    list.hidden = false;
-    btn.setAttribute("aria-expanded", "true");
+  function openDropdown(entry) {
+    closeAll(entry);
+    positionList(entry);
+    entry.list.hidden = false;
+    entry.btn.setAttribute("aria-expanded", "true");
   }
-  function selectOption(dd, li) {
-    const btn = dd.querySelector(".continuous-dd__btn");
-    const valueEl = btn.querySelector(".continuous-dd__value");
-    dd.querySelectorAll(".continuous-dd__option").forEach((o) => {
+  function selectOption(entry, li) {
+    const valueEl = entry.btn.querySelector(".continuous-dd__value");
+    entry.options.forEach((o) => {
       o.classList.toggle("is-selected", o === li);
       o.setAttribute("aria-selected", o === li ? "true" : "false");
     });
-    dd.dataset.value = li.dataset.value;
+    entry.dd.dataset.value = li.dataset.value;
     valueEl.textContent = li.textContent;
   }
 
-  dropdowns.forEach((dd) => {
-    const btn = dd.querySelector(".continuous-dd__btn");
-    const list = dd.querySelector(".continuous-dd__list");
-    const options = Array.from(dd.querySelectorAll(".continuous-dd__option"));
+  entries.forEach((entry) => {
+    const { btn, options } = entry;
 
     btn.addEventListener("click", () => {
-      if (list.hidden) {
-        openDropdown(dd);
+      if (entry.list.hidden) {
+        openDropdown(entry);
         (options.find((o) => o.classList.contains("is-selected")) || options[0]).focus();
       } else {
-        closeDropdown(dd);
+        closeDropdown(entry);
       }
     });
     btn.addEventListener("keydown", (e) => {
       if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        openDropdown(dd);
+        openDropdown(entry);
         (options.find((o) => o.classList.contains("is-selected")) || options[0]).focus();
       }
     });
 
     options.forEach((li, i) => {
-      li.addEventListener("click", () => { selectOption(dd, li); closeDropdown(dd); btn.focus(); });
+      li.addEventListener("click", () => { selectOption(entry, li); closeDropdown(entry); btn.focus(); });
       li.addEventListener("keydown", (e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          selectOption(dd, li);
-          closeDropdown(dd);
+          selectOption(entry, li);
+          closeDropdown(entry);
           btn.focus();
         } else if (e.key === "ArrowDown") {
           e.preventDefault();
@@ -237,18 +254,20 @@ function setupContinuousDropdowns() {
           (options[i - 1] || options[options.length - 1]).focus();
         } else if (e.key === "Escape") {
           e.preventDefault();
-          closeDropdown(dd);
+          closeDropdown(entry);
           btn.focus();
         } else if (e.key === "Tab") {
-          closeDropdown(dd);
+          closeDropdown(entry);
         }
       });
     });
   });
 
   document.addEventListener("click", (e) => {
-    if (!e.target.closest(".continuous-dd")) closeAll();
+    if (!e.target.closest(".continuous-dd") && !e.target.closest(".continuous-dd__list")) closeAll();
   });
+  window.addEventListener("scroll", () => closeAll(), { passive: true, capture: true });
+  window.addEventListener("resize", () => closeAll());
 }
 
 function chapterCardHTML(ch, idx) {
