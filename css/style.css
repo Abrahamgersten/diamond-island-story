@@ -545,6 +545,44 @@ h1, h2, h3 {
   white-space: nowrap;
 }
 
+.player-wrap { margin-top: 0.4rem; }
+.player-wrap .player { margin-top: 0; }
+.player-continuous {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.74rem;
+  color: var(--ink-soft);
+  padding: 0.35rem 0.7rem 0 0.7rem;
+  cursor: pointer;
+}
+.player-continuous__select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border: 1.5px solid var(--teal-200);
+  border-radius: 999px;
+  background-color: var(--white);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23166473' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 0.6rem center;
+  background-size: 13px 13px;
+  color: var(--teal-800);
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.3rem 0.8rem 0.3rem 1.7rem;
+  cursor: pointer;
+  box-shadow: 0 2px 6px -3px rgba(7, 34, 41, 0.3);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.player-continuous__select:hover { border-color: var(--teal-500); }
+.player-continuous__select:focus-visible { outline: 2px solid var(--gold-500); outline-offset: 1px; border-color: var(--teal-500); }
+html[lang="en"] .player-continuous__select {
+  background-position: right 0.6rem center;
+  padding: 0.3rem 1.7rem 0.3rem 0.8rem;
+}
+
 /* ---------- Footer ---------- */
 .site-footer {
   background: var(--teal-950);

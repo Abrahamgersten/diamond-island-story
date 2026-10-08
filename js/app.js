@@ -142,6 +142,21 @@ const storage = safeStorage();
 /* ---------------------------------------------------------------
    Render chapters
 --------------------------------------------------------------- */
+function continuousSelectHTML(ch, idx, total) {
+  const remaining = total - idx; // chapters from here to the end, including this one
+  if (remaining <= 1) return ""; // last chapter - nothing to chain to
+  const fixedOptions = [2, 3, 5].filter((n) => n < remaining);
+  const options = [`<option value="1">פרק זה בלבד</option>`]
+    .concat(fixedOptions.map((n) => `<option value="${n}">${n} פרקים</option>`))
+    .concat([`<option value="all">כל ${remaining} הפרקים מכאן</option>`])
+    .join("");
+  return `
+      <label class="player-continuous">
+        <span>נגן ברצף:</span>
+        <select class="player-continuous__select" aria-label="כמה פרקים לנגן ברצף, מתחילים מפרק ${ch.id}">${options}</select>
+      </label>`;
+}
+
 function chapterCardHTML(ch, idx) {
   const reverseClass = idx % 2 === 1 ? " chapter-card--reverse" : "";
   const [main, thumb] = ch.images;
@@ -162,15 +177,18 @@ function chapterCardHTML(ch, idx) {
       <span class="chapter-card__eyebrow">פרק ${ch.id}</span>
       <h3 class="chapter-card__title">${ch.title}</h3>
       <p class="chapter-card__teaser">${ch.teaser}</p>
-      <div class="player" data-src="${ch.audio}" data-chapter="${ch.id}">
-        <button class="player__btn" type="button" aria-label="הפעל הקראה של פרק ${ch.id}">▶</button>
-        <div class="player__body">
-          <input class="player__seek" type="range" min="0" max="100" value="0" step="0.1" aria-label="התקדמות ההקראה">
-          <div class="player__times">
-            <span class="player__current">0:00</span>
-            <span class="player__duration">--:--</span>
+      <div class="player-wrap">
+        <div class="player" data-src="${ch.audio}" data-chapter="${ch.id}">
+          <button class="player__btn" type="button" aria-label="הפעל הקראה של פרק ${ch.id}">▶</button>
+          <div class="player__body">
+            <input class="player__seek" type="range" min="0" max="100" value="0" step="0.1" aria-label="התקדמות ההקראה">
+            <div class="player__times">
+              <span class="player__current">0:00</span>
+              <span class="player__duration">--:--</span>
+            </div>
           </div>
         </div>
+        ${continuousSelectHTML(ch, idx, CHAPTERS.length)}
       </div>
     </div>
   </article>`;
@@ -240,15 +258,19 @@ function setupPlayers() {
   const players = Array.from(document.querySelectorAll(".player"));
   const bgMusic = document.getElementById("background-music");
   let activeAudio = null;
+  const controllers = []; // one per chapter, in order - lets the "ended" handler start the next one
+  let continuousPlan = null; // { remaining } while a multi-chapter chain is in progress
 
-  players.forEach((el) => {
+  players.forEach((el, idx) => {
     const src = el.dataset.src;
     const btn = el.querySelector(".player__btn");
     const seek = el.querySelector(".player__seek");
     const current = el.querySelector(".player__current");
     const duration = el.querySelector(".player__duration");
+    const continuousSelect = el.closest(".player-wrap")?.querySelector(".player-continuous__select");
     let audio = null;
     let seeking = false;
+    let pausedByOther = false; // true only when di-pause-request paused us (another chapter starting) - not a manual pause
 
     function ensureAudio() {
       if (audio) return audio;
@@ -278,24 +300,37 @@ function setupPlayers() {
         btn.textContent = "▶";
         btn.classList.remove("is-playing");
         btn.setAttribute("aria-label", "המשך הקראה");
+        // A manual pause (not another chapter in the chain starting, which pauses
+        // every other player via di-pause-request) cancels the plan.
+        if (!pausedByOther) continuousPlan = null;
+        pausedByOther = false;
       });
       audio.addEventListener("ended", () => {
         btn.textContent = "▶";
         btn.classList.remove("is-playing");
         seek.value = 0;
         current.textContent = "0:00";
+        continueChainFrom(idx);
       });
       return audio;
     }
 
     btn.addEventListener("click", () => {
       const a = ensureAudio();
-      if (a.paused) a.play().catch(() => {});
-      else a.pause();
+      if (a.paused) {
+        const choice = continuousSelect ? continuousSelect.value : "1";
+        continuousPlan = choice === "1" ? null : { remaining: choice === "all" ? Infinity : Number(choice) - 1 };
+        a.play().catch(() => {});
+      } else {
+        a.pause();
+      }
     });
 
     el.addEventListener("di-pause-request", () => {
-      if (audio && !audio.paused) audio.pause();
+      if (audio && !audio.paused) {
+        pausedByOther = true;
+        audio.pause();
+      }
     });
 
     seek.addEventListener("input", () => {
@@ -307,7 +342,24 @@ function setupPlayers() {
       a.currentTime = Number(seek.value);
       seeking = false;
     });
+
+    controllers[idx] = {
+      playFromStart() {
+        const a = ensureAudio();
+        a.currentTime = 0;
+        a.play().catch(() => {});
+      },
+    };
   });
+
+  function continueChainFrom(idx) {
+    if (!continuousPlan || continuousPlan.remaining <= 0) { continuousPlan = null; return; }
+    const nextIdx = idx + 1;
+    if (!controllers[nextIdx]) { continuousPlan = null; return; }
+    continuousPlan.remaining -= 1;
+    controllers[nextIdx].playFromStart();
+    document.querySelectorAll(".chapter-card")[nextIdx]?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
 
   function pauseBackgroundMusic() {
     if (bgMusic && !bgMusic.paused) {
