@@ -414,8 +414,9 @@ function setupPlayers() {
         btn.classList.remove("is-playing");
         btn.setAttribute("aria-label", "המשך הקראה");
         // A manual pause (not another chapter in the chain starting, which pauses
-        // every other player via di-pause-request) cancels the plan.
-        if (!pausedByOther) continuousPlan = null;
+        // every other player via di-pause-request, and not a natural end-of-track -
+        // the browser fires pause right before ended) cancels the plan.
+        if (!pausedByOther && !audio.ended) continuousPlan = null;
         pausedByOther = false;
       });
       audio.addEventListener("ended", () => {
