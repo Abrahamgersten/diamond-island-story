@@ -370,109 +370,146 @@ function setupMediaInteractions() {
 function setupPlayers() {
   const players = Array.from(document.querySelectorAll(".player"));
   const bgMusic = document.getElementById("background-music");
-  let activeAudio = null;
-  const controllers = []; // one per chapter, in order - lets the "ended" handler start the next one
+  // "Play in a row" (2026-10-15, Avraham: "it plays 2 or 3 chapters in a row and then stops, even if I asked for
+  // many more"). Two causes, both fixed here:
+  // 1. Any pause that did not come from the page's own button cancelled the chain - a WhatsApp notification sound,
+  //    a phone call or the lock screen pauses the media for a moment, the chapter carries on, and at its end the
+  //    chain was already gone (reproduced on the live site: one such pause stopped a 4-chapter chain after chapter
+  //    1). Now only the page's pause button cancels it.
+  // 2. Every chapter had its own media element, and with the screen locked or the browser in the background a phone
+  //    may refuse to start a NEW element without a tap. Now one element plays every chapter (like a podcast app):
+  //    the next chapter is the same element with another file, which the phone lets continue.
+  const audio = new Audio();
+  audio.preload = "none";
+  let active = null; // the chapter whose file is loaded in the shared element
+  let pendingSeek = 0; // where to start a chapter that was resumed or scrubbed before its file loaded
   let continuousPlan = null; // { remaining } while a multi-chapter chain is in progress
 
-  players.forEach((el, idx) => {
-    const src = el.dataset.src;
-    const btn = el.querySelector(".player__btn");
-    const seek = el.querySelector(".player__seek");
-    const current = el.querySelector(".player__current");
-    const duration = el.querySelector(".player__duration");
-    const continuousDd = el.closest(".player-wrap")?.querySelector(".continuous-dd");
-    let audio = null;
-    let seeking = false;
-    let pausedByOther = false; // true only when di-pause-request paused us (another chapter starting) - not a manual pause
+  const chapters = players.map((el, idx) => ({
+    el,
+    idx,
+    src: el.dataset.src,
+    btn: el.querySelector(".player__btn"),
+    seek: el.querySelector(".player__seek"),
+    current: el.querySelector(".player__current"),
+    duration: el.querySelector(".player__duration"),
+    dd: el.closest(".player-wrap")?.querySelector(".continuous-dd"),
+    playLabel: el.querySelector(".player__btn").getAttribute("aria-label"),
+    pos: 0,
+    seeking: false,
+  }));
 
-    function ensureAudio() {
-      if (audio) return audio;
-      audio = new Audio(src);
-      audio.preload = "none";
+  function showPlaying(c, playing) {
+    c.btn.textContent = playing ? "⏸" : "▶";
+    c.btn.classList.toggle("is-playing", playing);
+    c.btn.setAttribute("aria-label", playing ? "Pause" : c.pos > 0 ? "Resume narration" : c.playLabel);
+  }
 
-      audio.addEventListener("loadedmetadata", () => {
-        seek.max = audio.duration || 0;
-        duration.textContent = formatTime(audio.duration);
-      });
-      audio.addEventListener("timeupdate", () => {
-        if (seeking) return;
-        seek.value = audio.currentTime;
-        current.textContent = formatTime(audio.currentTime);
-      });
-      audio.addEventListener("play", () => {
-        players.forEach((other) => {
-          if (other !== el) other.dispatchEvent(new CustomEvent("di-pause-request"));
-        });
-        pauseBackgroundMusic();
-        btn.textContent = "⏸";
-        btn.classList.add("is-playing");
-        btn.setAttribute("aria-label", "Pause");
-        activeAudio = audio;
-      });
-      audio.addEventListener("pause", () => {
-        btn.textContent = "▶";
-        btn.classList.remove("is-playing");
-        btn.setAttribute("aria-label", "Resume narration");
-        // A manual pause (not another chapter in the chain starting, which pauses
-        // every other player via di-pause-request, and not a natural end-of-track -
-        // the browser fires pause right before ended) cancels the plan.
-        if (!pausedByOther && !audio.ended) continuousPlan = null;
-        pausedByOther = false;
-      });
-      audio.addEventListener("ended", () => {
-        btn.textContent = "▶";
-        btn.classList.remove("is-playing");
-        seek.value = 0;
-        current.textContent = "0:00";
-        continueChainFrom(idx);
-      });
-      return audio;
+  function load(c) {
+    if (active === c) return;
+    if (active) {
+      active.pos = audio.currentTime || active.pos;
+      showPlaying(active, false);
     }
+    active = c;
+    pendingSeek = c.pos;
+    audio.src = c.src;
+  }
 
-    btn.addEventListener("click", () => {
-      const a = ensureAudio();
-      if (a.paused) {
-        const choice = continuousDd ? continuousDd.dataset.value : "1";
-        continuousPlan = choice === "1" ? null : { remaining: choice === "all" ? Infinity : Number(choice) - 1 };
-        a.play().catch(() => {});
-      } else {
-        a.pause();
-      }
-    });
+  function start(c) {
+    load(c);
+    audio.play().catch(() => showPlaying(c, false));
+  }
 
-    el.addEventListener("di-pause-request", () => {
-      if (audio && !audio.paused) {
-        pausedByOther = true;
+  function setMediaSession(c) {
+    if (!("mediaSession" in navigator) || typeof MediaMetadata !== "function") return;
+    const card = c.el.closest(".chapter-card");
+    const title = card?.querySelector(".chapter-card__title")?.textContent || document.title;
+    const img = card?.querySelector(".chapter-card__main-img");
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title,
+        artist: document.querySelector(".hero__title")?.textContent.trim() || "",
+        artwork: img ? [{ src: img.currentSrc || img.src }] : [],
+      });
+    } catch (e) {
+      // lock-screen details are a nicety only
+    }
+  }
+
+  audio.addEventListener("loadedmetadata", () => {
+    if (!active) return;
+    active.seek.max = audio.duration || 0;
+    active.duration.textContent = formatTime(audio.duration);
+    if (pendingSeek > 0 && pendingSeek < audio.duration) audio.currentTime = pendingSeek;
+    pendingSeek = 0;
+  });
+  audio.addEventListener("timeupdate", () => {
+    if (!active || active.seeking) return;
+    active.seek.value = audio.currentTime;
+    active.current.textContent = formatTime(audio.currentTime);
+  });
+  audio.addEventListener("play", () => {
+    if (!active) return;
+    pauseBackgroundMusic();
+    showPlaying(active, true);
+    setMediaSession(active);
+  });
+  audio.addEventListener("pause", () => {
+    // no plan change here: this also fires for pauses the user did not make (notifications, calls, lock screen)
+    if (active && !audio.ended) {
+      active.pos = audio.currentTime;
+      showPlaying(active, false);
+    }
+  });
+  audio.addEventListener("ended", () => {
+    if (!active) return;
+    const c = active;
+    c.pos = 0;
+    showPlaying(c, false);
+    c.seek.value = 0;
+    c.current.textContent = "0:00";
+    continueChainFrom(c.idx);
+  });
+
+  chapters.forEach((c) => {
+    c.btn.addEventListener("click", () => {
+      if (active === c && !audio.paused) {
+        continuousPlan = null; // the user's own pause: the chain stops here
         audio.pause();
+        return;
       }
+      const choice = c.dd ? c.dd.dataset.value : "1";
+      continuousPlan = choice === "1" ? null : { remaining: choice === "all" ? Infinity : Number(choice) - 1 };
+      start(c);
     });
 
-    seek.addEventListener("input", () => {
-      seeking = true;
-      current.textContent = formatTime(Number(seek.value));
-    });
-    seek.addEventListener("change", () => {
-      const a = ensureAudio();
-      a.currentTime = Number(seek.value);
-      seeking = false;
+    // the background-music button pauses the narration (the chain is kept, as before)
+    c.el.addEventListener("di-pause-request", () => {
+      if (active === c && !audio.paused) audio.pause();
     });
 
-    controllers[idx] = {
-      playFromStart() {
-        const a = ensureAudio();
-        a.currentTime = 0;
-        a.play().catch(() => {});
-      },
-    };
+    c.seek.addEventListener("input", () => {
+      c.seeking = true;
+      c.current.textContent = formatTime(Number(c.seek.value));
+    });
+    c.seek.addEventListener("change", () => {
+      const t = Number(c.seek.value);
+      if (active === c && audio.readyState > 0) audio.currentTime = t;
+      else if (active === c) pendingSeek = t;
+      else c.pos = t;
+      c.seeking = false;
+    });
   });
 
   function continueChainFrom(idx) {
     if (!continuousPlan || continuousPlan.remaining <= 0) { continuousPlan = null; return; }
-    const nextIdx = idx + 1;
-    if (!controllers[nextIdx]) { continuousPlan = null; return; }
+    const next = chapters[idx + 1];
+    if (!next) { continuousPlan = null; return; }
     continuousPlan.remaining -= 1;
-    controllers[nextIdx].playFromStart();
-    document.querySelectorAll(".chapter-card")[nextIdx]?.scrollIntoView({ behavior: "smooth", block: "center" });
+    next.pos = 0;
+    start(next);
+    document.querySelectorAll(".chapter-card")[idx + 1]?.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
   function pauseBackgroundMusic() {
